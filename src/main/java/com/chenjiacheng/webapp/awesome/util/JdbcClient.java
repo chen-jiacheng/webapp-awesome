@@ -1,8 +1,6 @@
 package com.chenjiacheng.webapp.awesome.util;
 
 
-import lombok.*;
-
 import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.ArrayList;
@@ -121,6 +119,8 @@ public class JdbcClient {
                     T obj = newInstance(clazz);
                     for (int i = 1; i <= columnCount; i++) {
                         String colName = meta.getColumnLabel(i);
+                        // 驼峰转换
+                        colName = humpConversion(colName);
                         Field field = fieldMap.get(colName.toLowerCase());
                         if (field != null) {
                             setField(field, obj, rs.getObject(i));
@@ -131,6 +131,24 @@ public class JdbcClient {
             }
         }
         return result;
+    }
+
+    /**
+     * 驼峰转换
+     *
+     * @param colName 列名
+     * @return 转换后的列名
+     */
+    private String humpConversion(String colName) {
+        String[] cols = colName.split("_");
+        if (cols.length == 1) {
+            return cols[0].toLowerCase();
+        }
+        StringBuilder newColName = new StringBuilder(cols[0].toLowerCase());
+        for (int i = 1; i < cols.length; i++) {
+            newColName.append(cols[i].substring(0, 1).toUpperCase()).append(cols[i].substring(1));
+        }
+        return newColName.toString();
     }
 
     /**
@@ -189,41 +207,6 @@ public class JdbcClient {
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Set field failed: " + field.getName(), e);
         }
-    }
-
-
-    public static void main(String[] args) throws SQLException {
-        // 初始化（一次）
-        JdbcClient.init(
-                "com.mysql.cj.jdbc.Driver",
-                "jdbc:mysql://localhost:3306/webapp_db?useSSL=false",
-                "root",
-                "PX%wr!%9!q)Sq3a");
-
-        JdbcClient db = JdbcClient.getInstance();
-
-        // 查询（防注入）
-        User user = db.queryOne("SELECT * FROM tb_user WHERE username = ? AND status = ?", User.class, "user2024005", 1);
-        System.out.println("user = " + user);
-
-        // 更新（防注入）
-        int rows = db.execute("UPDATE tb_user SET login_count = ? WHERE id = ?", 10, 5);
-        System.out.println("rows = " + rows);
-    }
-
-    @Getter
-    @Setter
-    @ToString
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class User {
-        private Long id;
-        private String username;
-        private String password;
-        private Integer status;
-        private Integer loginCount;
-        private Date createTime;
-        private Date updateTime;
     }
 
 
