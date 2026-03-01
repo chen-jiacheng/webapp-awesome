@@ -1,5 +1,8 @@
 package com.chenjiacheng.webapp.awesome.dao.mapper;
 
+
+import com.chenjiacheng.webapp.awesome.dao.model.UserDO;
+
 /**
 * @author chenj
 * @description 针对表【t_user(用户表)】的数据库操作Mapper
@@ -7,6 +10,18 @@ package com.chenjiacheng.webapp.awesome.dao.mapper;
 * @Entity com.chenjiacheng.webapp.awesome.dao.model.UserDO
 */
 public interface UserMapper {
+
+    int deleteByPrimaryKey(Long id);
+
+    int insert(UserDO record);
+
+    int insertSelective(UserDO record);
+
+    UserDO selectByPrimaryKey(Long id);
+
+    int updateByPrimaryKeySelective(UserDO record);
+
+    int updateByPrimaryKey(UserDO record);
 
 }
 
