@@ -1,13 +1,8 @@
 package com.chenjiacheng.webapp.awesome.jdbc;
 
-import com.mysql.cj.jdbc.Driver;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import org.junit.jupiter.api.Test;
 
-import javax.sql.DataSource;
 import java.sql.*;
-import java.util.Properties;
 
 /**
  * JdbcTest
